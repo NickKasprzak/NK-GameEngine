@@ -56,6 +56,24 @@ namespace Funny
 		m_Coordinator->AddComponent<Transform>(testEnt, transform);
 		m_Coordinator->AddComponent<Renderable>(testEnt, renderable);
 
+		Entity testEnt2 = m_Coordinator->CreateEntity();
+		Transform transform2
+		{
+			transform2.position = Vector2(30, 0),
+			transform2.scale = Vector2(50, 50)
+		};
+
+		Renderable renderable2
+		{
+			renderable2.texture = ResourceManager::getSDLTexture("Quote"),
+			renderable2.sourceRect.x = 0,
+			renderable2.sourceRect.y = 0,
+			renderable2.sourceRect.w = 16,
+			renderable2.sourceRect.h = 16
+		};
+		m_Coordinator->AddComponent<Transform>(testEnt2, transform2);
+		m_Coordinator->AddComponent<Renderable>(testEnt2, renderable2);
+
 		//test = new Tilemap();
 		//test->loadMap();
 		return true;

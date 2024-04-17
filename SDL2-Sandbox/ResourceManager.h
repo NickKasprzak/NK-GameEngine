@@ -13,6 +13,8 @@ namespace Funny
 		static void unloadTexture(std::string name);
 		static void unloadAllTextures();
 
+		static void loadPrimitives();
+
 	private:
 		static std::unordered_map<std::string, SDL_Texture*> m_Textures;
 	};

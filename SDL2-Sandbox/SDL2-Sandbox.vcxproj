@@ -190,6 +190,7 @@
     <ClInclude Include="ComponentArray.hpp" />
     <ClInclude Include="ComponentManager.hpp" />
     <ClInclude Include="Coordinator.hpp" />
+    <ClInclude Include="ECSDemoSystem.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EntityManager.hpp" />
     <ClInclude Include="external\include\ImGui\imconfig.h" />
@@ -215,6 +216,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="ECSDemoSystem.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="external\include\ImGui\imgui.cpp" />
     <ClCompile Include="external\include\ImGui\imgui_demo.cpp" />

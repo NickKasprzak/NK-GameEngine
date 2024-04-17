@@ -32,6 +32,7 @@ namespace Funny
 
 		SDL_FreeSurface(tempSurface);
 		tempSurface = nullptr;
+
 		return newTexture;
 	}
 
@@ -64,5 +65,12 @@ namespace Funny
 		{
 			unloadTexture(i->first);
 		}
+	}
+
+	void ResourceManager::loadPrimitives()
+	{
+		loadSDLTexture("assets/Square.png", "Square");
+		loadSDLTexture("assets/Circle.png", "Circle");
+		loadSDLTexture("assets/Triangle.png", "Triangle");
 	}
 }

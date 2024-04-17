@@ -2,7 +2,9 @@
 #include <cstdint>
 #include <bitset>
 
+#include "SDL2/SDL.h"
 #include "Vector.h"
+#include "Color.h"
 
 namespace Funny
 {
@@ -28,7 +30,7 @@ namespace Funny
 	* integer sizes for arrays n such.
 	*/
 	typedef std::uint16_t Entity;
-	const Entity MAX_ENTITIES = 200;
+	const Entity MAX_ENTITIES = 1000;
 
 	/*
 	* When a new Component is registered in
@@ -63,6 +65,13 @@ namespace Funny
 	{
 		SDL_Texture* texture;
 		SDL_Rect sourceRect;
+		ColorRGBA color
+		{
+			color.r = 255,
+			color.g = 255,
+			color.b = 255,
+			color.a = 255
+		};
 		bool drawToScreen;
 	};
 

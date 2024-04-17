@@ -53,7 +53,13 @@ namespace Funny
 			dst.h = entTrans.scale.y
 		};
 
+		SDL_SetTextureColorMod(entRend.texture, entRend.color.r, entRend.color.g, entRend.color.b);
+		SDL_SetTextureAlphaMod(entRend.texture, entRend.color.a);
+
 		DrawSDLTexture(entRend.texture, src, dst);
+
+		SDL_SetTextureColorMod(entRend.texture, 255, 255, 255);
+		SDL_SetTextureAlphaMod(entRend.texture, 255);
 	}
 
 	/*

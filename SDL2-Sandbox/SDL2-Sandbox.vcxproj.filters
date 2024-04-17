@@ -82,6 +82,9 @@
     <ClInclude Include="Particle.h">
       <Filter>Source\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="ECSDemoSystem.h">
+      <Filter>Source\ECS-Demo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
@@ -110,6 +113,9 @@
     </Filter>
     <Filter Include="Source\Physics">
       <UniqueIdentifier>{ef823f39-7dc0-4986-9617-9d621ae418e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ECS-Demo">
+      <UniqueIdentifier>{b7c7951a-3378-48a3-8560-986e933d44c7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +163,9 @@
     </ClCompile>
     <ClCompile Include="Vector.cpp">
       <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="ECSDemoSystem.cpp">
+      <Filter>Source\ECS-Demo</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

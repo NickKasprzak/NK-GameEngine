@@ -10,6 +10,9 @@ namespace Funny
 	Coordinator* Engine::m_Coordinator = 0;
 	Tilemap* Engine::test = 0;
 
+	int Engine::frame = 0;
+	int Engine::frameStart = 0;
+
 	bool Engine::init(std::string name, int width, int height)
 	{
 		if (SDL_Init(SDL_INIT_EVERYTHING) != 0)

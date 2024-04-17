@@ -22,6 +22,7 @@ namespace Funny
 		}
 		static Engine* getInstance() { return m_Instance; }
 		static Coordinator* getCoordinator() { return m_Coordinator; }
+		static float getFPS() { return (float)frame / ((float)SDL_GetTicks64() / (float)1000); }
 
 		bool init(std::string name, int width, int height);
 		bool gameLoop();
@@ -36,8 +37,8 @@ namespace Funny
 		const int IMG_INIT_FLAGS = IMG_INIT_PNG || IMG_INIT_JPG;
 
 		// Temp timestep stuff until a proper physics system is added
-		int frame = 0;
-		int frameStart = 0;
-		float deltaTime;
+		static int frame;
+		static int frameStart;
+		static float deltaTime;
 	};
 }

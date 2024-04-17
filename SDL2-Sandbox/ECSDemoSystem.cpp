@@ -62,8 +62,6 @@ namespace Funny
 				newRenderable.sourceRect.x = 0;
 				newRenderable.sourceRect.y = 0;
 				SDL_QueryTexture(newRenderable.texture, NULL, NULL, &newRenderable.sourceRect.w, &newRenderable.sourceRect.h); // Move to helper func?
-				//newRenderable.sourceRect.w = 256;
-				//newRenderable.sourceRect.h = 256;
 
 				newRenderable.color.r = distribCol(gen);
 				newRenderable.color.g = distribCol(gen);
@@ -92,5 +90,7 @@ namespace Funny
 			Engine::getCoordinator()->DestroyEntity(entToDest[i]);
 			m_GeneratedEntities--;
 		}
+
+		std::cout << Engine::getFPS() << std::endl;
 	}
 }

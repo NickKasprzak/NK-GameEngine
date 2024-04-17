@@ -19,6 +19,6 @@ namespace Funny
 		int m_XSpawnPosMax = 640;
 
 		int m_YSpawnPos = 0;
-		int m_YDespawnPos = 500;
+		int m_YDespawnPos = 2000;
 	};
 }

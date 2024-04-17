@@ -113,6 +113,7 @@ namespace Funny
 		std::mt19937 gen(rd());
 		std::uniform_int_distribution<> distribPos(m_XSpawnPosMin, m_XSpawnPosMax);
 		std::uniform_int_distribution<> distribCol(0, 255);
+		std::uniform_int_distribution<> distribSpr(0, 2);
 
 		if (m_GeneratedEntities < m_MaxGeneratedEntities)
 		{
@@ -130,12 +131,30 @@ namespace Funny
 
 			Renderable newRenderable;
 			{
-				newRenderable.texture = ResourceManager::getSDLTexture("Square");
+				
+				switch (distribSpr(gen))
+				{
+					case 0:
+						newRenderable.texture = ResourceManager::getSDLTexture("Square");
+						break;
+
+					case 1:
+						newRenderable.texture = ResourceManager::getSDLTexture("Circle");
+						break;
+
+					case 2:
+						newRenderable.texture = ResourceManager::getSDLTexture("Triangle");
+						break;
+
+					default:
+						break;
+				}
 
 				newRenderable.sourceRect.x = 0;
 				newRenderable.sourceRect.y = 0;
-				newRenderable.sourceRect.w = 256;
-				newRenderable.sourceRect.h = 256;
+				SDL_QueryTexture(newRenderable.texture, NULL, NULL, &newRenderable.sourceRect.w, &newRenderable.sourceRect.h); // Move to helper func?
+				//newRenderable.sourceRect.w = 256;
+				//newRenderable.sourceRect.h = 256;
 
 				newRenderable.color.r = distribCol(gen);
 				newRenderable.color.g = distribCol(gen);

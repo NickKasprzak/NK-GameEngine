@@ -95,6 +95,61 @@
 * the server too or something. IDK maybe it could be
 * good for events too? Or general client-server validation?
 */
+
+/*
+* When it comes to networking the ECS-related stuff, I
+* think a functional approach would be to serialize and
+* deserialize our objects through their Entity ID ie.
+* the ID corresponding to each entity/component grouping
+* will be the exact same on the client and server. An
+* entity of ID 1 that has data for a transform at (10, 10)
+* on the server will have that exact data on all connected
+* clients as well.
+*
+* The only problem with this approach is how Entities are
+* created. Since the EntityManager just grabs the first
+* available Entity from a queue on creation, we can't just
+* say "oh Entity of ID n has these components!" without
+* messing up the internal system. Instead, we could have
+* global Network IDs attached to a local Entity ID, so
+* Entity IDs don't matter and all changes to a local entity
+* are done based on its global Network ID'd counterpart.
+* For example, an Entity with Network ID 2 could have a
+* transform of (10, 10) and an Entity ID of 10 on the server
+* but an Entity ID of 5 on the client. The server tells
+* the client to update the Entity of Network ID 2 with
+* new transform data, so the client updates Entity of ID
+* 5 with the new transform data. Both represent the same
+* exact data visually, but can be stored at different
+* positions in memory locally without issue.
+* 
+* This also lets us correct any issues (like premature
+* deletion or component additions/removals) by replicating
+* the deserialized data provided by the server at any entity
+* as long as said entity corresponds to the given Network ID
+* on all clients.
+* 
+* This also gives us a clearer picture of what we should be
+* sending in our packets across the server, being the Network
+* ID of the entity and the components we want to update. We
+* can pick and choose what we send and don't send to the client
+* as long as the game state gets replicated properly.
+* 
+* Long term example, but components like transforms should
+* always be communicated across the network since they're
+* pretty much always changing. But things like Sprites should
+* only be passed over once (somehow through sending the image
+* data as bytes) to be loaded by the ResourceManager locally
+* so it can then be replicated by sending the image's name
+* as the component's data rather than always sending the full
+* sprite each time. We could do something like "Entity2 has
+* sprite 'Quote'". If the client doesn't have sprite 'Quote'
+* loaded, it could ask the server to send it the sprite data
+* to then attach to Entity2 once the sprite is loaded,
+* replicating everything else about Entity2 in the meantime,
+* including providing it an empty Renderable component with
+* the other needed data as a placeholder.
+*/
 namespace Funny
 {
 	/*

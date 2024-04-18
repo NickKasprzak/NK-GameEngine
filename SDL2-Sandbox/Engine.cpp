@@ -2,8 +2,6 @@
 #include "RenderSystem.h"
 #include "ResourceManager.h"
 
-#include "ECSDemoSystem.h"
-
 namespace Funny
 {
 	Engine* Engine::m_Instance = 0;
@@ -39,11 +37,6 @@ namespace Funny
 		renderSignature.set(m_Coordinator->GetComponentType<Transform>());
 		renderSignature.set(m_Coordinator->GetComponentType<Renderable>());
 		m_Coordinator->SetSystemSignature<RenderSystem>(renderSignature);
-
-		std::shared_ptr<ECSDemoSystem> demoSystem = m_Coordinator->RegisterSystem<ECSDemoSystem>();
-		Signature demoSignature;
-		demoSignature.set(m_Coordinator->GetComponentType<Transform>());
-		m_Coordinator->SetSystemSignature<ECSDemoSystem>(demoSignature);
 
 		Funny::ResourceManager::loadPrimitives();
 		Funny::ResourceManager::loadSDLTexture("assets/quote.png", "Quote");

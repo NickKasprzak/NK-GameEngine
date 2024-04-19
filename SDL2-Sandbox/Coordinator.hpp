@@ -149,6 +149,84 @@
 * replicating everything else about Entity2 in the meantime,
 * including providing it an empty Renderable component with
 * the other needed data as a placeholder.
+* 
+* Transforms in themselves shouldn't ALWAYS be communicated.
+* I'm thinking a better approach would be to instead communicate
+* entire entities over the wire, with their Networked Entity ID
+* and the components they have serialized into our packets. The
+* entities that do get communicated over the wire depends entirely
+* on the game state, so if something changes with an Entity on
+* the server that must be replicated across all connected clients,
+* then we send a packet with that Entity's updated component data.
+* For example, entities with active physics states would need to
+* have their physics data sent to each client. This would include
+* their new transform from physics simulation.
+* 
+* Queue entities that need to be updated across the network in
+* networking system from other systems (ie. PhysicsSystem tells
+* NetworkSystem about the entities it updated that frame and what
+* components it changed so the NetworkSystem can construct packets
+* from specifically just that data.) This way we won't have to have
+* our NetworkSystem look through every single Entity, check all of
+* their components based on their signatures, and then create a
+* packet from all their data, without even knowing if it was changed
+* at all from the previous state. This way we can have a reliable
+* way of telling our network system what data it should spent its
+* time replicating and what data can be left alone (ie. something
+* with a transform that hasn't actually changed since last state).
+* 
+* Handling things this way also lets us create and store world states
+* based on what was queued to be updated across the network based on
+* entity and component data, which can be useful for things like
+* resending lost data, state interpolation, validating client requests,
+* making sure we're only updating relevant data across the network,
+* and so on.
+* 
+* Going more into detail about queueing things to be replicated
+* across the network by system, this lets us decouple networking
+* from our components. Not everything with a Transform needs to
+* be updated across the network every update as not everything with
+* a Transform is updated within the game frequently.
+* 
+* My only worry about this system is handling updates to components
+* that aren't directly linked to a major system like Physics. What
+* if the player changes an object's transform directly? How do we
+* know to communicate that it was changed and needs to be replicated
+* or validated by the server? The idea of putting network code into
+* every single component and ensuring they can only be updated through
+* setter functions makes me sick since we want to keep things as
+* decoupled as possible. Checking and updating every single component
+* also just isn't feasible since that would put too much strain on
+* the network and the server.
+*
+* But I also feel like this crosses the line between engine logic
+* and game logic. The player shouldn't have access to directly changing
+* crucial values like transform data directly outside of something
+* like a scripting API, and a scripting API can handle updating things
+* within the engine and telling the network system that something has
+* been changed via script and needs to be replicated/validated. Not
+* everything needs to be exactly replicated across the network and
+* if the player does attempt to inject modifications to a component's
+* data directly (ie. update Transform position data) through unintended
+* means, they'll end up desyncing with the server on their own machine
+* through their own doing and will only disrupt/change the play experience
+* for themselves, keeping other players and the server safe from their
+* stupid antics. Keeping the scripting API safe from hacking the game
+* is its own can of worms though, that would be thinking toooo far ahead.
+* 
+* For now, focus on getting a basic client-server model established.
+* Have a server class that manages players, keeping track of their
+* port and address (if thats even needed for TCP), what entity theyre
+* controlling, and maybe username? Use a dumb client model where only
+* user input gets communicated from the client, which the server then
+* processes, validates, and sends back to the client as their new
+* position. Have an input system of some kind, doesn't have to be
+* super robust or complicated. Have a way to serialize input and
+* position data. Have a way to add and remove players, adding player
+* to the player list and sending them the current world state on
+* connect, and removing them and their entity from the game on
+* disconnect/timeout. Have a way to communicate Entity creation and
+* deletion to each client from the server.
 */
 namespace Funny
 {

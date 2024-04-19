@@ -214,6 +214,36 @@
 * stupid antics. Keeping the scripting API safe from hacking the game
 * is its own can of worms though, that would be thinking toooo far ahead.
 * 
+* That all being said, we could notify the network system/manager that
+* an object that needs to be replicated has to be updated, so instead
+* of accessing the network system directly from our other systems'
+* update functions, we can just shoot out an event saying that the
+* given entity and some of its components were updated and anything
+* that cares (like our networking system) will hear this and respond.
+* That way, our physics and networking systems remain entirely decoupled,
+* alongside various other systems that might need to know about state
+* and entity updates for their respective system processes.
+* 
+* But speaking of events, would it be better to handle event execution
+* and script simulation entirely on the server? While it might be a little
+* rough having things like weapons have their simulation tied to the server,
+* I do think it'd be neccessary to prevent things like desyncs between
+* the client and server from happening in the event an event is fired from
+* the client's perspective but isn't from the server's. We won't have to
+* worry about completely reversing the results of firing the event on the
+* client if the server deems the execution of that event impossible based
+* on its perspective. Given a scenario where high latency would be an issue
+* to begin with, I would argue that having a delayed event execution would
+* be a better experience for the player than having an event trigger and
+* immediately have that trigger be reversed a second later, forcing them
+* to try to trigger the event again by repeating whatever action they did.
+* Its like "Click and wait a second to fire" versus "Click multiple times
+* until you fire and it isn't immediately reverted by the server". Both
+* aren't ideal, but waiting is the lesser of the two evils here. It'd also
+* be impossible to predict how an event or script-based function would
+* play out considering events can be anything and scripts can LITERALLY
+* be anything provided the API offers the tools to make it happen.
+* 
 * For now, focus on getting a basic client-server model established.
 * Have a server class that manages players, keeping track of their
 * port and address (if thats even needed for TCP), what entity theyre

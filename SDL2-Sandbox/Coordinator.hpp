@@ -135,6 +135,21 @@
 * can pick and choose what we send and don't send to the client
 * as long as the game state gets replicated properly.
 * 
+* I'm still unsure as to how to ensure that entities have the
+* same network ID across all instances of the game. Maybe have
+* the network system manage all networked instances from itself.
+* The network system could have a "CreateNetworkedEntity" func
+* that creates an entity through the coordinator like normal, but
+* also assigns that Entity to a network ID, either being created
+* server side and picks an available ID that the Entity can use,
+* or client side and assigns an ID to the newly created Entity
+* based on the ID contained in the packet when recieved from the
+* server. The client shouldn't be creating a networked entity,
+* only asking the server to create one for it. We want the
+* server to authoritative over what happens in-game. This applies
+* to deletion as well. The client should only delete networked
+* entities if the server says its ok.
+* 
 * Long term example, but components like transforms should
 * always be communicated across the network since they're
 * pretty much always changing. But things like Sprites should

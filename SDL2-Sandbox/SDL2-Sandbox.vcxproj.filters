@@ -82,6 +82,21 @@
     <ClInclude Include="Particle.h">
       <Filter>Source\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="external\include\SimpleSock\allocators.h">
+      <Filter>External\SimpleSock</Filter>
+    </ClInclude>
+    <ClInclude Include="external\include\SimpleSock\constants.h">
+      <Filter>External\SimpleSock</Filter>
+    </ClInclude>
+    <ClInclude Include="external\include\SimpleSock\defer.h">
+      <Filter>External\SimpleSock</Filter>
+    </ClInclude>
+    <ClInclude Include="external\include\SimpleSock\pool.h">
+      <Filter>External\SimpleSock</Filter>
+    </ClInclude>
+    <ClInclude Include="external\include\SimpleSock\socklib.h">
+      <Filter>External\SimpleSock</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
@@ -110,6 +125,9 @@
     </Filter>
     <Filter Include="Source\Physics">
       <UniqueIdentifier>{ef823f39-7dc0-4986-9617-9d621ae418e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External\SimpleSock">
+      <UniqueIdentifier>{2b1b38dd-d133-4c0c-8ba8-cf77b9c31f4b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +175,21 @@
     </ClCompile>
     <ClCompile Include="Vector.cpp">
       <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="external\include\SimpleSock\allocators.cpp">
+      <Filter>External\SimpleSock</Filter>
+    </ClCompile>
+    <ClCompile Include="external\include\SimpleSock\pool.cpp">
+      <Filter>External\SimpleSock</Filter>
+    </ClCompile>
+    <ClCompile Include="external\include\SimpleSock\socklib_generic.cpp">
+      <Filter>External\SimpleSock</Filter>
+    </ClCompile>
+    <ClCompile Include="external\include\SimpleSock\socklib_win32.cpp">
+      <Filter>External\SimpleSock</Filter>
+    </ClCompile>
+    <ClCompile Include="external\include\SimpleSock\strlcpy.cpp">
+      <Filter>External\SimpleSock</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

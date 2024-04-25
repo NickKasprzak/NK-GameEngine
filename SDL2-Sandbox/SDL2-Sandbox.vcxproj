@@ -200,6 +200,11 @@
     <ClInclude Include="external\include\ImGui\imstb_rectpack.h" />
     <ClInclude Include="external\include\ImGui\imstb_textedit.h" />
     <ClInclude Include="external\include\ImGui\imstb_truetype.h" />
+    <ClInclude Include="external\include\SimpleSock\allocators.h" />
+    <ClInclude Include="external\include\SimpleSock\constants.h" />
+    <ClInclude Include="external\include\SimpleSock\defer.h" />
+    <ClInclude Include="external\include\SimpleSock\pool.h" />
+    <ClInclude Include="external\include\SimpleSock\socklib.h" />
     <ClInclude Include="FastNoiseLite.h" />
     <ClInclude Include="KDTree.h" />
     <ClInclude Include="Level.h" />
@@ -223,6 +228,11 @@
     <ClCompile Include="external\include\ImGui\imgui_impl_sdlrenderer2.cpp" />
     <ClCompile Include="external\include\ImGui\imgui_tables.cpp" />
     <ClCompile Include="external\include\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="external\include\SimpleSock\allocators.cpp" />
+    <ClCompile Include="external\include\SimpleSock\pool.cpp" />
+    <ClCompile Include="external\include\SimpleSock\socklib_generic.cpp" />
+    <ClCompile Include="external\include\SimpleSock\socklib_win32.cpp" />
+    <ClCompile Include="external\include\SimpleSock\strlcpy.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="ResourceManager.cpp" />

@@ -4,6 +4,8 @@
 #include "ComponentManager.hpp"
 #include "SystemManager.hpp"
 
+// MOVE THIS SHIT ELSEWHERE HOLY FUCK
+
 /*
 * Throwing together the silly ECS demo has
 * posed a lot of questions about the system as
@@ -273,6 +275,99 @@
 * disconnect/timeout. Have a way to communicate Entity creation and
 * deletion to each client from the server.
 */
+
+/*
+* thought dump from the network manager
+* 
+* SERVER ONLY SYSTEM (probably)
+*
+* Reason being that the client and server need to store and process the
+* whole game loop differently.
+*
+* === SERVER ===
+*
+* Server needs to create, update, and destroy entities across the network
+* based on its perception of the whole game state since everything is being
+* simulated by it.
+*
+* Server needs to initialize a socket to listen for connections, keep track
+* of said connections, and what entity those connections are represented by.
+* Also needs to recieve and process input packets from those connections.
+*
+* Needs to keep track of the entities created, updated, and deleted during
+* the gameplay loop that should be networked. It keeps track of the entities
+* that need to be networked based on its signature, representing the component
+* data it needs to keep an eye on to ensure that only they get replicated.
+* Things like Transforms and BoxColliders (in our case for this basic game).
+*
+* It only needs to worry itself with things like Renderables during creation
+* so it can let the client know what kind of sprite an object should have.
+* Since Renderables are texture data managed by pointers, we need to tell
+* the client the name of the texture being loaded. This also means that the
+* ResourceManager needs to be opened on the server.
+*
+* During the update loop, it loops through all of the entities its managing.
+* If an entity its managing doesn't have a NetworkID attached to it, it assigns
+* one to it and sends out a packet to clients informing them to create an Entity
+* corresponding to that network ID as well. If an entity attached to a network ID
+* is no longer being managed, we can assume that the entity has been deleted.
+* Except not really because an entity can become unmanaged by any system if the
+* components that need to be tracked are removed. Working around not explicitly
+* knowing if an entity has been deleted or is just unmanaged by the network is
+* another problem an event system would fix since we can have events telling us
+* whether a component was removed or an entity was deleted rather than having to
+* make assumptions about it. ITS PROBABLY FINE FOR NOW????? FUCK.
+*
+* Have this exist seperately from the ECS systems. Store a signature of the components
+* we absolutely need to replicate across the server. Have events fire for whenever
+* the coordinator adds a component to an entity or deletes an entity. If the entity
+* created matches the s
+*
+* Entity archetypes? I don't know enough to about engine programming to do networking
+* for it yet lol. This is too much. I don't know enough about various engine programming
+* concepts or networking to know exactly how to properly generate what aspects of a world
+* state have been updated, what the server has updated and what specifically it needs to
+* care about. BUT THE STUFF WE CARE ABOUT UPDATING IS THE STUFF UPDATED BY SPECIFIC SYSTEMS.
+* WE CARE ABOUT PHYSICS UPDATES, WE CARE ABOUT COMPONENT CREATION AND STUFF. Anything can
+* have a transform and collision box, but theres no point in communicating data about it
+* over the network if the systems its used by (physics) have updated it.
+*
+* So have events for creating entities, assigning ALL entities corresponding NetworkIDs,
+* adding components to entities, removing components from entities, updating components
+* attached to entities, and deleting entities.
+*
+* All of this needs to be replicated across the network. It doesn't matter. What matters
+* is when it happens. If the server EVER creates an object of any type, it probably needs
+* to be replicated across the network.
+*
+* Whats throwing me off is local entities. Stuff that varies from client to client. Each
+* player probably doesn't need to store info relating to the PlayerControllers for other
+* players, or things like their camera. I guess the only difference would be that the
+* server holds onto a NetworkID for the local entity, but the data specific to that entity
+* and its components is stored locally on each client? Fuck. I'm overthinking this. FUUCCKCKK.
+*
+* === EVENT BENEFITS ===
+*
+* Itd be nice to have a queue of every updated entity or something so I only
+* have to care about whats been updated during a given frame. I could do that
+* through events so the server could be indirectly informed about entities
+* being updated or deleted based on their IDs so we dont have to trudge through
+* the entire managed list to see if an entity with a networked ID has been updated
+* or deleted and how. This would also let us isolate certain types of updates
+* by only registering the server to listen for specific updates it needs to be
+* aware of (physics updates and deletion updates).
+*
+* The above would also simplify the Update loop since a list of entities that
+* have been modified in some capacity would've been formed by the server's response
+* to certain events.
+*
+* Having an event system in general would just be good. Push for it. Actually,
+* don't. You're overcomplicating things.
+*
+* === CLIENT ===
+*
+*
+*/
 namespace Funny
 {
 	/*
@@ -306,6 +401,11 @@ namespace Funny
 			m_EntityManager->DestroyEntity(entity);
 			m_ComponentManager->EntityDestroyed(entity);
 			m_SystemManager->EntityDestroyed(entity);
+		}
+
+		Signature GetEntitySignature(Entity entity)
+		{
+			return m_EntityManager->GetEntitySignature(entity);
 		}
 
 

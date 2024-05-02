@@ -97,6 +97,18 @@
     <ClInclude Include="external\include\SimpleSock\socklib.h">
       <Filter>External\SimpleSock</Filter>
     </ClInclude>
+    <ClInclude Include="ServerSystem.h">
+      <Filter>Source\Networking-Final</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSystem.h">
+      <Filter>Source\Networking-Final</Filter>
+    </ClInclude>
+    <ClInclude Include="ByteStream.h">
+      <Filter>Source\Networking-Final</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketTypes.h">
+      <Filter>Source\Networking-Final</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
@@ -128,6 +140,9 @@
     </Filter>
     <Filter Include="External\SimpleSock">
       <UniqueIdentifier>{2b1b38dd-d133-4c0c-8ba8-cf77b9c31f4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Networking-Final">
+      <UniqueIdentifier>{c4c4d486-5d73-44f0-90ce-305c788ef98d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +205,15 @@
     </ClCompile>
     <ClCompile Include="external\include\SimpleSock\strlcpy.cpp">
       <Filter>External\SimpleSock</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerSystem.cpp">
+      <Filter>Source\Networking-Final</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSystem.cpp">
+      <Filter>Source\Networking-Final</Filter>
+    </ClCompile>
+    <ClCompile Include="ByteStream.cpp">
+      <Filter>Source\Networking-Final</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

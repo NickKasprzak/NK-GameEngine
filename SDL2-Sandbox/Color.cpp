@@ -16,4 +16,17 @@ namespace Funny
 		g = g * rhs;
 		b = b * rhs;
 	}
+
+	bool ColorRGBA::operator==(ColorRGBA& rhs)
+	{
+		if (r == rhs.r &&
+			g == rhs.g &&
+			b == rhs.b &&
+			a == rhs.a)
+		{
+			return true;
+		}
+
+		return false;
+	}
 }

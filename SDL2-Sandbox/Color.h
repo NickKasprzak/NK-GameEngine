@@ -21,6 +21,7 @@ namespace Funny
 
 		ColorRGBA operator*(float& rhs);
 		void operator*=(float& rhs);
+		bool operator==(ColorRGBA& rhs);
 
 		uint32 r = 0;
 		uint32 g = 0;

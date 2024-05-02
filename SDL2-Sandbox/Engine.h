@@ -23,8 +23,9 @@ namespace Funny
 		static Engine* getInstance() { return m_Instance; }
 		static Coordinator* getCoordinator() { return m_Coordinator; }
 		static float getFPS() { return (float)frame / ((float)SDL_GetTicks64() / (float)1000); }
+		static bool isInstServer() { return isServer; }
 
-		bool init(std::string name, int width, int height);
+		bool init(std::string name, int width, int height, bool asServer);
 		bool gameLoop();
 		bool close();
 
@@ -40,5 +41,7 @@ namespace Funny
 		static int frame;
 		static int frameStart;
 		static float deltaTime;
+
+		static bool isServer;
 	};
 }

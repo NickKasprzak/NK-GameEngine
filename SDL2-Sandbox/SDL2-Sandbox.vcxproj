@@ -185,6 +185,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ByteStream.h" />
+    <ClInclude Include="ClientSystem.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="ComponentArray.hpp" />
@@ -208,6 +210,8 @@
     <ClInclude Include="FastNoiseLite.h" />
     <ClInclude Include="KDTree.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="PacketTypes.h" />
+    <ClInclude Include="ServerSystem.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="RenderSystem.h" />
@@ -219,6 +223,8 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ByteStream.cpp" />
+    <ClCompile Include="ClientSystem.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="external\include\ImGui\imgui.cpp" />
@@ -236,6 +242,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="ServerSystem.cpp" />
     <ClCompile Include="Tilemap.cpp" />
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="Window.cpp" />

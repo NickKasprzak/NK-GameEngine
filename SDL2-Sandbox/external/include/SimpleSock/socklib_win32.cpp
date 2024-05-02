@@ -190,7 +190,7 @@ int Socket::Recv(char *buffer, int size) {
       return -1;
     }
     if (WSAGetLastError() == WSAEWOULDBLOCK) {
-      _last_error = SOCKLIB_ETIMEDOUT;
+      _last_error = SOCKLIB_EWOULDBLOCK;
       return -1;
     }
   }

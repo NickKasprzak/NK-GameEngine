@@ -63,8 +63,18 @@ namespace Funny
 
 	struct Renderable
 	{
-		SDL_Texture* texture;
-		SDL_Rect sourceRect;
+		SDL_Texture* texture = nullptr;
+		char name[20];
+		int nameLen;
+
+		SDL_Rect sourceRect
+		{
+			sourceRect.x = 0,
+			sourceRect.y = 0,
+			sourceRect.w = 256,
+			sourceRect.h = 256
+		};
+
 		ColorRGBA color
 		{
 			color.r = 255,
@@ -72,7 +82,8 @@ namespace Funny
 			color.b = 255,
 			color.a = 255
 		};
-		bool drawToScreen;
+
+		bool drawToScreen = true;
 	};
 
 	struct Transform

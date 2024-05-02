@@ -6,7 +6,17 @@ int main(int argc, char* argv[])
 	SockLibInit();
 	Funny::Engine* engine = nullptr;
 	engine = Funny::Engine::createInstance();
-	engine->init("Funny", 640, 480);
+
+	if (argc > 1)
+	{
+		engine->init("Funny", 0, 0, true);
+	}
+
+	else
+	{
+		engine->init("Funny", 640, 480, false);
+		//engine->init("Funny", 0, 0, true);
+	}
 
 	while (engine->gameLoop())
 	{

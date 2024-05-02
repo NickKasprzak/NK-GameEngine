@@ -364,7 +364,7 @@ namespace Funny
 
 	void ServerSystem::SpawnCoins()
 	{
-		if ((m_Coins != m_MaxCoins) && (m_CoinTimer == m_CoinSpawnTime))
+		if ((m_Coins < m_MaxCoins) && (m_CoinTimer >= m_CoinSpawnTime))
 		{
 			std::random_device rand;
 			std::mt19937 gen(rand());
@@ -388,7 +388,7 @@ namespace Funny
 			Engine::getCoordinator()->AddComponent<Renderable>(coinEntity, coinSprite);
 
 			CreateNetworkedEntity(coinEntity);
-
+			std::cout << "Spawned coin." << std::endl;
 			m_CoinTimer = 0;
 			m_Coins++;
 

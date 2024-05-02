@@ -1,0 +1,1 @@
+You can build and run the game through Visual Studio. You need to run the game with an argument to create the server, then run the game twice without arguments to create client instances to connect to the server. The game has two players using the arrow keys to move around and collect coins randomly placed on screen, with the first player to 5 coins collected being the winner.

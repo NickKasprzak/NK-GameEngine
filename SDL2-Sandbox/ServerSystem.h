@@ -123,6 +123,8 @@ namespace Funny
 		int m_MaxCoins = 10;
 		int m_CoinTimer = 0;
 		int m_CoinSpawnTime = 120;
+		int m_CoinsToWin = 5;
+
 		ColorRGBA m_CoinColor =
 		{
 			m_CoinColor.r = 245,

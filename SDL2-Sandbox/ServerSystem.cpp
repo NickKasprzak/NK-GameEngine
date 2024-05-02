@@ -83,32 +83,38 @@ namespace Funny
 			Engine::getCoordinator()->AddComponent<Renderable>(newEnt, entRenderable);
 
 			m_Connections[i].m_EntityNetworkID = CreateNetworkedEntity(newEnt);
-			
-			/*
-			ByteStream stream;
-			std::string entIDMessage("Your NetID is: ");
-			entIDMessage += std::to_string(m_Connections[i].m_EntityNetworkID);
-
-			PacketHeader hPack;
-			hPack.packetType = PacketTypes::GAME_MESSAGE;
-			hPack.SerializePacket(stream);
-
-			GameMessagePacket mPack;
-			memcpy(mPack.message, entIDMessage.data(), entIDMessage.size());
-			mPack.messageLength = entIDMessage.size();
-			mPack.SerializePacket(stream);
-
-			char packet[4096];
-			size_t packetBytes;
-			stream.getBuffer(packet, 4096, packetBytes);
-			m_Connections[i].m_Socket.Send(packet, packetBytes);
-			*/
+			m_Connections[i].score = 0;
 		}
 	}
 
 	void ServerSystem::update()
 	{
 		RecieveFromClients();
+
+		// This stupid loop here mightve exposed an issue with the
+		// ECS where no safety measures exist to ensure an entity
+		// ID is in use before deleting it, leading to the live
+		// entity count underflowing to its maximum value.
+		// 
+		// Wow my first underflow error! Cool!
+		for (int i = 0; i < m_ConnCount; i++)
+		{
+			ConnectionData& conn = m_Connections[i];
+			if (conn.score == m_CoinsToWin)
+			{
+				std::cout << "Client " << i << " has won. Restarting." << std::endl;
+
+				for (auto const& val : m_EntityToNetworkID)
+				{
+					Entity ent = val.first;
+					DeleteNetworkedEntity(ent);
+				}
+
+				InitializeClients();
+				SendToClients();
+				return;
+			}
+		}
 
 		CheckForOverlaps();
 
@@ -207,6 +213,20 @@ namespace Funny
 	* the packet manager for each entity that has
 	* had some kind of update made to it since
 	* last state update.
+	* 
+	* This works fine provided the small scope of
+	* the game, but it doesn't handle creation and
+	* deletion of objects rapidly in one frame well.
+	* If an event for an entity goes out for its
+	* creation and deletion on the same frame, then
+	* the client wont know what to do since it could
+	* recieve a delete event for something it hasn't
+	* even recieved yet.
+	* 
+	* Its just something good to keep in mind for
+	* the future, just need a more strict and secure
+	* system to avoid issues like this. And one that
+	* hasn't been cobbled together in a few days.
 	*/
 	void ServerSystem::SendToClients()
 	{

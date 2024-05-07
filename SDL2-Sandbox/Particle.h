@@ -16,13 +16,18 @@ namespace Funny
 	{
 		/*
 		* Holds the linear position of the particle
-		* in world space
+		* in world space.
 		*/
 		Vector2 position;
 
 		/*
 		* Holds the linear velocity of the particle
-		* in world space
+		* in world space. This should only be updated
+		* by the application of force.
+		* 
+		* It probably can be directly changed, but it
+		* would be a bit jarring when taking other aspects
+		* of our physics simulation into account.
 		*/
 		Vector2 velocity;
 
@@ -44,6 +49,9 @@ namespace Funny
 		* our integrator. By contrast, acceleration can be
 		* different frame to frame, either by direct altercation
 		* of the value or being changed from application of force.
+		* We can change acceleration to be anything we want from
+		* one moment to the next and our physics simulation will
+		* look just fine.
 		* 
 		* An example of this direct altercation is through
 		* applying gravity.
@@ -93,7 +101,7 @@ namespace Funny
 		*/
 		void setMass(float mass)
 		{
-			if (mass == 0) { mass = 1; }
+			if (mass == 0) { inverseMass = 0; return; }
 			inverseMass = 1.0f / mass;
 		}
 
@@ -104,6 +112,7 @@ namespace Funny
 
 		float getMass()
 		{ 
+			if (inverseMass == 0) { return 0; }
 			return 1.0f / inverseMass;
 		}
 

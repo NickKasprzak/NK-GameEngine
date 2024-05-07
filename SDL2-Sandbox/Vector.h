@@ -32,6 +32,18 @@ namespace Funny
 		void operator/=(float scalar);
 
 		/*
+		* A simple helper function that adds
+		* a vector of a scaled quantity to
+		* this vector.
+		* 
+		* Can be used for things like integration
+		* where we need to add a velocity vector
+		* scaled by delta time to get the change
+		* in position for a timestep.
+		*/
+		void addScaledVector(Vector2 vector, float scalar);
+
+		/*
 		* Gets the direction of the vector
 		* normalized to the 0-1 range.
 		*/
@@ -95,19 +107,23 @@ namespace Funny
 		* each other, or their similarity.
 		* 
 		* Multiplying this cos(angle) value
-		* by the magnitudes of the vectors show
-		* us how strongly these two vectors are
-		* similar or dissimilar in their respective
-		* directions. Two vectors of a high
-		* magnitude will produce a far greater
-		* magnitude, whereas two vectors of a low
-		* magnitude will produce a smaller
-		* magnitude. Scaling these by the value
-		* of the cos(angle) will show us if the
-		* vectors how strongly the two vectors
-		* point towards a similar or opposite
-		* direction, or how much one vector
-		* lies in the direction of another.
+		* by the magnitudes of the vectors offers
+		* a quantification of how much the component
+		* of one vector points in the direction
+		* of another, rather than just being with
+		* respect to direction. Given vectors A and
+		* B, the dot product would offer the component
+		* of B thats pointing in the direction of A.
+		* 
+		* For example, the normalized Vector A has
+		* a magnitude of 1 and Vector B has a magnitude
+		* of 2. If Vector B is pointing off in an almost
+		* perpendicular direction to A, despite having
+		* a high magnitude, its dot product will be
+		* a lower value like 0.3 since only some of its
+		* strength is being directed towards where A is
+		* pointing. This also applies with negative
+		* dot product.
 		* 
 		* With physics programming, the dot
 		* product lets us calculate the magnitude
@@ -116,6 +132,26 @@ namespace Funny
 		* unit length/normalized.
 		*/
 		float dotProduct(Vector2 other);
+
+		/*
+		* Given the relationship between the dot
+		* product and the angle formed between
+		* two vectors, seen with:
+		* 
+		* a dot b = |a| |b| * cos(theta)
+		* 
+		* provided that a and b are normalized,
+		* we can find the angle formed between
+		* them using the following formula:
+		* 
+		* acos(a dot b) = theta
+		* 
+		* If they aren't normalized, then the
+		* angle would have to be found using:
+		* 
+		* acos( (a dot b) / |a| |b| ) = theta
+		*/
+		float getAngle(Vector2 other);
 
 		/*
 		* Gets the cross product (also known as
@@ -169,26 +205,23 @@ namespace Funny
 		* In some cases, we might want to make
 		* a fully orthogonal grouping of three
 		* vectors, where each vector is at a
-		* right angle to the other two. This
-		* involves starting with two non-parallel
-		* vectors. One vector, Vector A, will
-		* keep its direction but will be normalized
-		* if it isn't already. The other vector,
-		* Vector B, might need to have its
-		* magnitude and direction altered so
-		* its orthogonal to A. The third vector,
-		* Vector C, will be created through the
-		* cross product of vectors A and B.
+		* right angle to the other two. We need
+		* two non-parallel vectors to start with.
 		* 
-		* The algorithm might go as such:
-		* - Normalize vector A
-		* - Find C through the cross product of A and B
-		* - If C has a magnitude of 0, A and B are parallel
-		*	and the orthonormal basis can't be made
-		* - Otherwise, normalize C
-		* - Now that C and A are orthogonal to each other,
-		*   we can recalculate B using them to make sure
-		*   its also orthogonal
+		* Our primary vector, Vector A, serves as
+		* the basis for the orthonormal basis. It
+		* is normalized if it hasn't already been.
+		* 
+		* Our secondary vector, Vector B, serves the
+		* sole purpose of generating Vector C through
+		* the cross product of it and A. It will have
+		* its direction and magnitude changes to be
+		* orthogonal to A and C if it isn't already
+		* after the fact.
+		* 
+		* As mentioned above, our tertiary vector,
+		* Vector C, is generated as the cross product
+		* of Vector A and Vector B.
 		* 
 		* The orthogonal basis is used for contact
 		* detection and resolution later on.
@@ -199,8 +232,14 @@ namespace Funny
 		* coordinate system is as simple as changing
 		* the order of operations for the cross
 		* products.
+		* 
+		* Note that an orthonormal basis can only
+		* be generated for a 3D coordinate plane,
+		* as it relies on the cross product to
+		* generate results. Its only defined here
+		* for reference purposes.
 		*/
-		//void makeOrthonormalBasis();
+		void makeOrthonormalBasis(Vector2& B, Vector2& C);
 
 		float x = 0;
 		float y = 0;

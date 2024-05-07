@@ -70,6 +70,13 @@ namespace Funny
 		this->y /= scalar;
 	}
 
+	void Vector2::addScaledVector(Vector2 vector, float scalar)
+	{
+		Vector2 scaled = vector * scalar;
+		this->x += scaled.x;
+		this->y += scaled.y;
+	}
+
 	Vector2 Vector2::normalize()
 	{
 		Vector2 normalizedVec;
@@ -105,8 +112,25 @@ namespace Funny
 		return (this->x * other.x) + (this->y * other.y);
 	}
 
+	float Vector2::getAngle(Vector2 other)
+	{
+		float dot = this->dotProduct(other);
+		float aMag = magnitude();
+		float bMag = other.magnitude();
+		
+		return acos(dot / (aMag * bMag));
+	}
+
 	float Vector2::crossProduct(Vector2 other)
 	{
 		return (this->x * other.y) - (this->y * other.x);
+	}
+
+	void Vector2::makeOrthonormalBasis(Vector2& B, Vector2& C)
+	{
+		this->normalize();
+		//C = crossProduct(B); - only works with 3D
+		C.normalize();
+		//B = crossProduct(C); - once again only work with 3D
 	}
 }

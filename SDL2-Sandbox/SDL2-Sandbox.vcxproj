@@ -201,11 +201,13 @@
     <ClInclude Include="external\include\ImGui\imstb_textedit.h" />
     <ClInclude Include="external\include\ImGui\imstb_truetype.h" />
     <ClInclude Include="FastNoiseLite.h" />
+    <ClInclude Include="ForceGenerator.h" />
     <ClInclude Include="KDTree.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="RenderSystem.h" />
+    <ClInclude Include="SpringForces.h" />
     <ClInclude Include="System.hpp" />
     <ClInclude Include="SystemManager.hpp" />
     <ClInclude Include="Tilemap.h" />
@@ -223,9 +225,12 @@
     <ClCompile Include="external\include\ImGui\imgui_impl_sdlrenderer2.cpp" />
     <ClCompile Include="external\include\ImGui\imgui_tables.cpp" />
     <ClCompile Include="external\include\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="ForceGenerator.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Particle.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="SpringForces.cpp" />
     <ClCompile Include="Tilemap.cpp" />
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="Window.cpp" />

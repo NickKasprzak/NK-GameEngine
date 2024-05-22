@@ -14,6 +14,97 @@ namespace Funny
 	*/
 	struct Particle
 	{
+	public:
+		/*
+		* When integrating our particle, we use the
+		* typical position with respect to velocity,
+		* acceleration, and time formula with integrals.
+		* 
+		* p' = p + vt + 1/2( at^2 )
+		* 
+		* However, since our timestep is usually so
+		* small (a single frame is 1/60th of a second,
+		* or 0.0166 seconds, in a 60 FPS game), the
+		* acceleration part of the equation ends up
+		* being so small its negligible. It gets
+		* ommitted here in favor of handling change
+		* in velocity due to acceleration seperately.
+		* 
+		* Speaking of which, our velocity update is
+		* as follows:
+		* 
+		* v' = vd^t + at
+		* 
+		* with d being the damping factor. d is
+		* raised to a power of t to ensure that
+		* its applied proportionally to our time,
+		* to avoid the velocity being damped at
+		* the same rate each frame regardless of
+		* how long each frame is taking.
+		* 
+		* Its noted that the process of raising
+		* one float to the power of another is
+		* a slow process, so with games simulating
+		* a lot of objects at a time it'd be best
+		* to calculate d^t before the simulation
+		* as a constant.
+		*/
+		void integrate(float dt);
+
+		/*
+		* Functions for adding forces to our particle
+		* and clearing the forces that have been
+		* accumulated by it.
+		* 
+		* Whenever we want to apply a force, we need
+		* to add it to the particle's force accumulator.
+		* This process must be done before the integration
+		* phase if we want force application to have results
+		* the same frame they're applied. This is done
+		* using force generators.
+		* 
+		* We also need to clear the accumulated forces
+		* at the end of the integration phase, meaning
+		* our current force generators will only be active
+		* for one integration cycle.
+		*/
+		void addForce(Vector2 force);
+		void clearForces();
+
+		/*
+		* Accessor functions for setting and getting the
+		* normal mass and inverse mass, making it so that
+		* we don't have to continually do new calculations
+		* around the inverse mass stored locally.
+		*/
+		void setMass(float mass);
+		void setInverseMass(float inverseMass);
+		float getMass();
+		float getInverseMass();
+
+		/*
+		* Functions for setting other particle attributes
+		*/
+		void setPosition(Vector2 pos);
+		void setVelocity(Vector2 vel);
+		void setAcceleration(Vector2 accel);
+		void setDamping(float damping);
+
+		/*
+		* Functions for getting other particle attributes
+		*/
+		Vector2 getPosition();
+		Vector2 getVelocity();
+		Vector2 getAcceleration();
+		float getDamping();
+
+		/*
+		* Helper function to check if the mass of this
+		* particle is valid for use in calculations
+		*/
+		bool isFiniteMass();
+
+	private:
 		/*
 		* Holds the linear position of the particle
 		* in world space.
@@ -52,11 +143,21 @@ namespace Funny
 		* We can change acceleration to be anything we want from
 		* one moment to the next and our physics simulation will
 		* look just fine.
-		* 
-		* An example of this direct altercation is through
-		* applying gravity.
 		*/
 		Vector2 acceleration;
+
+		/*
+		* An example of this direct altercation is through
+		* applying gravity. Speaking of gravity, the force
+		* due to gravity will ALWAYS be the same regardless
+		* of the object's mass, meaning its a constant force
+		* applied in same to all objects being influenced
+		* by gravity in our simulation. In fact, force due
+		* to gravity can exist on a fully object to object
+		* basis to allow for more fine-tuned physics
+		* interactions, which we do here.
+		*/
+		Vector2 gravity;
 
 		/*
 		* Given that acceleration due to force also relies
@@ -94,34 +195,6 @@ namespace Funny
 		float inverseMass;
 
 		/*
-		* Accessor functions for setting and getting the
-		* normal mass and inverse mass, making it so that
-		* we don't have to continually do new calculations
-		* around the inverse mass stored locally.
-		*/
-		void setMass(float mass)
-		{
-			if (mass == 0) { inverseMass = 0; return; }
-			inverseMass = 1.0f / mass;
-		}
-
-		void setInverseMass(float inverseMass)
-		{ 
-			this->inverseMass = inverseMass;
-		}
-
-		float getMass()
-		{ 
-			if (inverseMass == 0) { return 0; }
-			return 1.0f / inverseMass;
-		}
-
-		float getInverseMass()
-		{
-			return inverseMass;
-		}
-
-		/*
 		* Newton's first law states that an object not
 		* being acted on by any forces will continue to
 		* move at a constant rate at its current rate of
@@ -152,5 +225,14 @@ namespace Funny
 		* any issues with calculations.
 		*/
 		float damping;
+
+		/*
+		* When applying forces to our particles, D'Alembert's
+		* principal implies that the sum of all forces applied
+		* to a particle at a given moment can be applied to
+		* the particle as one combined force, being the accumulated
+		* force here.
+		*/
+		Vector2 forceAccumulator;
 	};
 }

@@ -82,6 +82,12 @@
     <ClInclude Include="Particle.h">
       <Filter>Source\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="ForceGenerator.h">
+      <Filter>Source\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="SpringForces.h">
+      <Filter>Source\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
@@ -156,6 +162,15 @@
       <Filter>Source\Level</Filter>
     </ClCompile>
     <ClCompile Include="Vector.cpp">
+      <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="ForceGenerator.cpp">
+      <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="SpringForces.cpp">
       <Filter>Source\Physics</Filter>
     </ClCompile>
   </ItemGroup>

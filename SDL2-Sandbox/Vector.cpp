@@ -22,6 +22,14 @@ namespace Funny
 		return result;
 	}
 
+	Vector2 Vector2::operator+(Vector2 other)
+	{
+		Vector2 result;
+		result.x = x + other.x;
+		result.y = y + other.y;
+		return result;
+	}
+
 	void Vector2::operator+=(Vector2& other)
 	{
 		this->x += other.x;
@@ -36,11 +44,20 @@ namespace Funny
 		return result;
 	}
 
+	Vector2 Vector2::operator-(Vector2 other)
+	{
+		Vector2 result;
+		result.x = x - other.x;
+		result.y = y - other.y;
+		return result;
+	}
+
 	void Vector2::operator-=(Vector2& other)
 	{
 		this->x -= other.x;
 		this->y -= other.y;
 	}
+
 
 	Vector2 Vector2::operator*(float scalar)
 	{

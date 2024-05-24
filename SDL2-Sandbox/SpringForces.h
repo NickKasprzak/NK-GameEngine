@@ -181,4 +181,188 @@ namespace Funny
 		float waterDensity;
 		float waterHeight;
 	};
+
+	/*
+	* === STIFF SPRINGS ===
+	* 
+	* Most interactions in real life can be modelled after spring
+	* like forces, including collisions. When an object collides
+	* with another, both give a little bit and push back on each
+	* other, almost like a really stiff spring.
+	* 
+	* This stiff spring model can be used in our engine by allowing
+	* objects to interpenetrate each other on collision and then
+	* be corrected using a spring-like force to push them out of
+	* each other. This, however, has the caveat of causing all
+	* collision resolutions to be bouncy and unstable. Increasing
+	* the collisions' spring constant to a really high amount to
+	* counteract this can result in instability spurred by numerical
+	* and calculation errors.
+	* 
+	* The problem manifests in how we apply the force of our spring
+	* during our timestep. When we apply a force, it gets converted
+	* directly to an acceleration, which then is used to update our
+	* velocity through applying our acculumated force for however
+	* long our timestep is. The issue is that when we generate a
+	* force for our spring, the force we calculate is only accurate
+	* for the specific moment in time at which its calculated. This
+	* means that we're simulating a force that only exists for a
+	* moment in time for much longer than it should be active for
+	* (one specific moment in time versus a the full timestep).
+	* 
+	* This is perfectly fine (if a bit innaccurate) for springs with
+	* smaller spring constants due to them applying less force, meaning
+	* that applying their force across the full timestep wont be too
+	* different from that of a real spring that only applies the force
+	* for a moment. This doesn't work for stiffer springs though, as
+	* a higher spring constant, meaning a higher force, will result in
+	* this imaginary force being applied for far too long and end in
+	* the aforementioned calculation errors. This also happens if the
+	* timestep is too long, so a slow machine could run into collision
+	* errors if their computer drags for a bit and a spring's force is
+	* applied for too long.
+	* 
+	* ^^^^ HOLY SHIT IS THAT WHY OLD ROBLOX'S PHYSICS WERE LOCKED TO
+	*	   30 FPS??? BECAUSE ANY OTHER FPS WOULD COMPLETELY BOTCH THE
+	*	   THE SIMULATION??? THE SPRING PHYSICS REALLY IS WHY OLD
+	*	   ROBLOX HAD SUCH WACKY MOVEMENT OH MY GODDDD! AAAAAAAAAA!!!
+	* 
+	* Because of this, we're going to have to create a force generator
+	* that attempts to simulate stiff springs in a different way. We
+	* do this by attempting to predict how the spring's applied force
+	* will change across our designated timestep that we're simulating
+	* it over rather than simulating the force at the start of our
+	* timestep over the entire timestep. This comes in the form of getting
+	* the average force throughout the entire timestep. This kind of
+	* spring is called an implicit spring.
+	*/
+
+	/*
+	* === SIMPLE HARMONIC MOTION ===
+	* 
+	* Simple harmonic motion is when a spring oscillates back and forth,
+	* compressing both ends to their maximum extent and extending outwards
+	* by the same length, forever due to not being influenced by any other
+	* forces or drag to slow it down. The position for each end of the
+	* spring obeys the following equation:
+	* 
+	* a = -z^2 + p
+	* 
+	* with z being defined as such for the sake of convenience:
+	* 
+	* z = sqrt( k/m )
+	* 
+	* This is a differential equation that links our differentials together.
+	* In our case, acceleration is the second differential of position. We
+	* can solve this equation (somehow) to get another differential equation
+	* that connects our initial position and velocity at the start of our
+	* simulated timestep to that of its expected position at the end of the
+	* timestep, provided that our spring is operating under simple harmonic
+	* motion. Its defined as such:
+	* 
+	* pFin = pIni * cos( zt ) + (vIni / z ) * sin( zt )
+	* 
+	* where pIni is position of the given end of the spring relative to that
+	* of the spring's resting length. This gives us a position value that
+	* isn't marred by incorrectly applying a springs momentary force for
+	* the duration of a timestep and (I think) factors in the spring's
+	* change in force throughout the timestep. This can then be used to
+	* calculate the resulting average acceleration for our timestep as:
+	* 
+	* a = (pFin - pIni) * ( 1 / (t^2) ) - vIni
+	* 
+	* This acceleration will get our particle to the right place based on
+	* how our stiff spring should function, but it wont get there with the
+	* correct velocity. This inconsistency isnt too much of an issue though
+	* as the resulting velocity tends to be close to the expected velocity
+	* and, provided that our anchored end of the spring isnt in motion, the
+	* predicted velocity will never result in collisions that increase the
+	* velocity with every timestep (implying that we will need to keep this
+	* in mind if the anchored end IS moving). The only real downside of this
+	* mismatch of correct and predicted velocity is an inaccurate spring
+	* constant that might be stiffer or looser than specified.
+	*/
+
+	/*
+	* === DAMPED HARMONIC MOTION ===
+	* 
+	* In real life, springs are still influenced by damping. When a harmonic
+	* spring is influenced by damping, its known as damped harmonic motion,
+	* gradually decreasing its velocity during its oscillations until it
+	* eventually settles at resting length. Our current simulation adds
+	* damping through the integration step, but our implicit spring doesn't
+	* take it into account yet. We can include damping in the equations
+	* defined above to get the following differential equation:
+	* 
+	* a = (-k * p) + (d * v)
+	* 
+	* where d is our drag coefficient. Since we're working with the
+	* simplest kind of drag here and only want a rough approximation so
+	* long as its mostly accurate, our drag coefficient is only equal
+	* to our drag coefficient of k1 and k2 is entirely omitted.
+	* 
+	* Solving this differential equation for the position at a given
+	* time gives us another relationship of:
+	* 
+	* pFin = [ pIni * cos( ut ) + c * sin( ut ) ] * e^( -0.5 * d * t )
+	* 
+	* where e is a mathematical constant representing exponential
+	* growth, u is a constant given by:
+	* 
+	* u = 1/2 * sqrt( 4 * k - d^2 )
+	* 
+	* and c is a constant given by:
+	* 
+	* c = ( d / 2u ) * pIni + ( 1 / u ) vIni
+	* 
+	* The resulting value for pFin and our already known values for
+	* pIni and vIni can be substituted into the equation for acceleration
+	* defined above to get the expected acceleration of our particle
+	* to get it to a position that we want it to be at based on damped
+	* harmonic motion.
+	* 
+	* All of this can be combined to create our fake stiff spring force
+	* generator.
+	* 
+	* As a by product of how our spring force is generated, we no
+	* longer have any need to include our spring's resting length
+	* in our calculation. Because of this, our spring cant actually
+	* have a resting length assigned to it. This means that our
+	* spring cant be compressed, so all force applied to our spring
+	* must be pushing down on the spring towards our anchored position
+	* and will result in a force that pushes away from that anchored
+	* position. Our force generation also assumes that we're working
+	* with a fixed location, as having two particles on either end
+	* of the spring would result in our formula having to factor in
+	* movement in addition to position, which makes the equation
+	* impossible to solve. Granted, we can still move our anchored
+	* position from frame to frame, but it might not produce the
+	* most reliable results.
+	* 
+	* This also comes with the limitation of how our spring interacts
+	* with other forces. Our equations assume that our particle attached
+	* to our spring is in fully free movement, not being influenced by
+	* any other forces that may disrupt how the spring returns to its
+	* resting position from its current position. This results in
+	* inaccuracies if we were to have other forces influence the
+	* particle attached to the spring due to them not being accounted
+	* for in the prediction and doing so wouldn't be feasible. Its just
+	* another limitation that needs to be worked around.
+	* 
+	* This should be fine for the quick bounce of collision though.
+	* It worked well enough for ROBLOX. Even though their collision
+	* solveer was inaccurate, I think it worked well for the silly
+	* and cartoonish nature of the game. It definitely wouldn't work
+	* provided ROBLOX's current direction though.
+	*/
+	class ParticleFakeSpring : public IForceGenerator
+	{
+	public:
+		ParticleFakeSpring(Vector2* anchoredPosition, float springConstant, float dampingConstant);
+		virtual void generateForce(Particle* particle, float dt);
+	private:
+		Vector2* anchoredPosition;
+		float springConstant;
+		float dampingConstant;
+	};
 }

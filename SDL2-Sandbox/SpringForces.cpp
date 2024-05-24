@@ -159,4 +159,55 @@ namespace Funny
 		force.y *= ((depth - maxSubmersionDepth) / 2) * maxSubmersionDepth; // dont really get this
 		particle->addForce(force);
 	}
+
+	ParticleFakeSpring::ParticleFakeSpring(Vector2* anchoredPosition, float springConstant, float dampingConstant)
+	{
+		this->anchoredPosition = anchoredPosition;
+		this->springConstant = springConstant;
+		this->dampingConstant = dampingConstant;
+	}
+
+	void ParticleFakeSpring::generateForce(Particle* particle, float dt)
+	{
+		if (!particle->isFiniteMass()) { return; }
+
+		/*
+		* Get position of particle relative
+		* to the anchored position
+		*/
+		Vector2 posInit;
+		posInit = particle->getPosition();
+		posInit -= (*anchoredPosition);
+
+		/*
+		* Calculate our constants u (aka gamma)
+		* and c and make sure they're valid
+		*/
+		float u = 0.5f * sqrtf(4 * springConstant - powf(dampingConstant, 2));
+		if (u == 0) { return; }
+
+		Vector2 c = posInit;
+		c *= (dampingConstant / (2 * u));
+		Vector2 uVel = particle->getVelocity();
+		uVel *= (1 / u);
+		c += uVel;
+		
+		/*
+		* Calculate the position at the
+		* end of our timestep
+		*/
+		Vector2 posFin = ( posInit * cosf(u * dt) ) + (c * sinf(u * dt));
+		posFin *= expf(-0.5f * dampingConstant * dt);
+
+		/*
+		* Calculate our resulting acceleration
+		* based on our calculated position
+		*/
+		Vector2 posDiff = posFin;
+		posDiff -= posInit;
+		Vector2 accel = posDiff * (1 / powf(dt, 2));
+		accel = accel - (particle->getVelocity() * dt);
+
+		particle->addForce(accel * particle->getMass());
+	}
 }
